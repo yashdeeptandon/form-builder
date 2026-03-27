@@ -1,11 +1,8 @@
 
-import './App.css'
+import { FormBuilderPage } from '@/components/pages/form-builder-page'
 
 function App() {
-
-  return (
-    <main className='text-red'>Hello</main>
-  )
+  return <FormBuilderPage />
 }
 
 export default App

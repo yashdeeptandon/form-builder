@@ -441,3 +441,90 @@ Expose optional trace events:
 - ADR-002: Rule engine compile/evaluate architecture
 - ADR-003: MSW + localStorage mock persistence strategy
 - JSON Schema Migration Guide for schemaVersion updates
+
+## 21. Current Implementation Status (As of 2026-03-27)
+### 21.1 Completed Foundation
+- Vite + React + TypeScript baseline is running.
+- Tailwind v4 pipeline is configured and compiling.
+- shadcn initialization is completed with alias setup and base utility layer.
+- App providers are wired for Redux Toolkit and React Query.
+- Domain-first state slices are scaffolded (builder, preview, runtime, ui).
+- Schema contracts and runtime validation entry are scaffolded with Zod.
+- Atomic UI baseline structure is scaffolded (atoms, molecules, organisms, templates, pages).
+
+### 21.2 Installed Dependency Status
+Installed from TRD direction:
+- @reduxjs/toolkit
+- react-redux
+- @tanstack/react-query
+- @tanstack/react-query-devtools
+- zod
+- nanoid
+- msw
+- dnd-kit packages
+- class-variance-authority
+- clsx
+- tailwind-merge
+- shadcn and Tailwind-related packages
+- vitest and testing-library stack
+- playwright
+
+Still pending from TRD mandatory architecture:
+- no pending mandatory library dependencies
+
+Still pending from TRD recommended UX and quality:
+- implementation usage of all installed recommended libraries in feature modules
+
+### 21.3 Feature Implementation Status
+- Builder workspace: normalized state and baseline page and field CRUD implemented.
+- Rule engine compiler and evaluator: compiler and evaluator baselines implemented.
+- Preview execution runtime: evaluator-integrated preview rendering with dynamic field visibility and page navigation baseline.
+- Mock API handlers and query integration: baseline implemented with MSW, localStorage repository, and React Query hooks.
+- Test pyramid: compiler and evaluator unit tests started and passing.
+
+## 22. Atomic Design and Frontend Guardrails
+This section is mandatory for all implementation work.
+
+### 22.1 Atomic Structure (UI Composition)
+Use the following component hierarchy:
+- atoms: primitive UI wrappers (field controls, labels, badges, icons)
+- molecules: small compositions (field row, condition row, page item)
+- organisms: complex sections (page builder panel, rule builder panel, preview form block)
+- templates: layout shells (builder template, preview template)
+- pages: route-level containers composing templates and data bindings
+
+### 22.2 Feature and Domain Boundaries
+- Keep business logic in domains, not in UI atoms or molecules.
+- UI layers must consume domain selectors and typed view models.
+- Rule evaluation logic must remain framework-agnostic and pure TypeScript.
+- API adapters must not be imported directly into atoms, molecules, or organisms.
+
+### 22.3 Dependency Direction Rules
+- atoms -> no domain imports.
+- molecules -> may use atoms only.
+- organisms -> may use atoms and molecules.
+- templates -> may use organisms and selectors.
+- pages -> may orchestrate templates, hooks, and route concerns.
+- domains -> cannot import from page or template layers.
+
+### 22.4 Frontend Engineering Principles
+- Single source of truth: authored schema and runtime state in Redux slices.
+- Side effects in dedicated hooks or async services only.
+- Pure reducers and pure rule functions.
+- Type-safe boundaries between transport DTO, domain model, and UI model.
+- Selector-first rendering to avoid prop drilling and unnecessary rerenders.
+- Accessibility-by-default in every reusable atom.
+
+### 22.5 Definition of Non-Compliant Changes
+Changes should be rejected if they:
+- place rule engine logic inside React components
+- bypass selectors and read deeply nested store state in many components
+- couple API response shape directly to UI without mapping
+- create circular imports between domain and UI layers
+
+## 23. Immediate Action Plan (Post-Phase-1)
+1. Extend CRUD with rule builder authoring UI and dependency-guided resolution actions.
+2. Harden evaluator with incremental impacted-rule execution and deterministic conflict edge cases.
+3. Expand unit tests for reducers and runtime edge behavior.
+4. Add integration and end-to-end suites for branching paths and save/load behavior.
+5. Add persistence flow integration tests (create, update, list, load, and retry states).
